@@ -138,3 +138,4 @@ Due to App Router update, the expansion pack is currently **outdated**. It will 
 
 # frontend_eProject_sem3
 # frontend_eProject_sem3
+# blog-mely-frontend
