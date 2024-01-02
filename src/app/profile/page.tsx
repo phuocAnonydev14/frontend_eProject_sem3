@@ -41,7 +41,7 @@ export default function Profile() {
 		}
 	}, [selectedKey])
 	
-	return <div>
+	return <div style={{width:"90%",margin:"40px auto"}}>
 		<Card className={"mt-6"} bodyStyle={{paddingBottom: 0, boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"}}>
 			<Typography.Title level={3}>
 				Account security
