@@ -16,7 +16,8 @@ export const Header = () => {
 			<img style={{width:50,height:50}} src="https://bizweb.dktcdn.net/100/091/193/themes/789472/assets/logo.svg?1701059146562" alt=""/>
 		</div>
 		<div className={"flex gap-2"}>
-			<Button icon={<FontAwesomeIcon icon={faUser} />} type={"primary"} onClick={() => router.push("/auth/sign-in")}>Login</Button>
+			{/*<Button icon={<FontAwesomeIcon icon={faUser} />} type={"primary"} onClick={() => router.push("/auth/sign-in")}>Login</Button>*/}
+			<Button icon={<FontAwesomeIcon icon={faUser} />} type={"text"} onClick={() => router.push("/profile")}>Ho Huu Phuoc</Button>
 			<Button type={"text"} icon={<FontAwesomeIcon icon={faPhotoFilm} />}>Photos</Button>
 		</div>
 	</div>
