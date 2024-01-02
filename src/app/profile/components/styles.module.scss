@@ -1,0 +1,44 @@
+.wrapper {
+  //border-right: 1px rgba(5, 5, 5, 0.06) solid;
+  padding-right: 12px;
+
+  .avatar--wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex: 1;
+    align-items: center;
+
+    .avatar {
+      margin-right: 24px;
+      width: 142px;
+      height: 142px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-info {
+
+    }
+  }
+}
+
+.slide--wrapper {
+  cursor: pointer;
+  .slide {
+    border: 1px solid #dedede;
+    border-radius: 4px;
+    &:hover {
+      border: 1px solid #333;
+    }
+
+    .frame {
+      display: block;
+      width: 100%;
+    }
+  }
+}
+
+

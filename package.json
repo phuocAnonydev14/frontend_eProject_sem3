@@ -26,6 +26,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "@types/react": "^18.2.45",
     "antd": "^5.12.4",
+    "antd-img-crop": "^4.21.0",
     "clsx": "^2.0.0",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.297.0",
@@ -33,6 +34,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.12.0",
+    "sass": "^1.69.6",
     "tailwind": "^4.0.0",
     "tailwind-merge": "^2.1.0"
   },
