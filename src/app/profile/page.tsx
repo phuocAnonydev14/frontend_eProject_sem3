@@ -5,6 +5,7 @@ import {faUser} from "@fortawesome/free-solid-svg-icons";
 import {Card, Menu, Typography} from "antd";
 import {useCallback, useState} from "react";
 import {EditUser} from "@/app/profile/components/EditUser";
+import {ChangePassword} from "@/app/profile/components/ChangePassword";
 
 export default function Profile() {
 	
@@ -22,8 +23,8 @@ export default function Profile() {
 			icon: <FontAwesomeIcon icon={faUser}/>
 		},
 		{
-			key: 'notification',
-			label: 'Notification',
+			key: 'histo',
+			label: 'History',
 			icon: <FontAwesomeIcon icon={faUser}/>
 		},
 	]
@@ -33,7 +34,9 @@ export default function Profile() {
 		switch (selectedKey) {
 			case "edit-user": {
 				return <EditUser/>
-				break;
+			}
+			case "change-password":{
+				return <ChangePassword />
 			}
 			default: {
 				return <EditUser/>
@@ -42,7 +45,7 @@ export default function Profile() {
 	}, [selectedKey])
 	
 	return <div style={{width:"90%",margin:"40px auto"}}>
-		<Card className={"mt-6"} bodyStyle={{paddingBottom: 0, boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"}}>
+		<Card className={"my-6"} bodyStyle={{paddingBottom: 0, boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"}}>
 			<Typography.Title level={3}>
 				Account security
 			</Typography.Title>
@@ -55,15 +58,14 @@ export default function Profile() {
 				selectedKeys={[selectedKey]}
 				style={{borderBottom: "none"}}
 				onSelect={(item) => {
-					// navigate(`/account/security/${item?.key}`);
 					setSelectedKey(item.key)
 				}}
 				items={items}
 			/>
 		</Card>
 		
-		<Card>
-			<SelectionRender/>
-		</Card>
+			<div className={"mt-6"}>
+				<SelectionRender/>
+			</div>
 	</div>
 }
