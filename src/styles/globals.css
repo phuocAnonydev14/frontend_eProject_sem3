@@ -8,6 +8,11 @@
   box-sizing: border-box;
 }
 
+#mainHead {
+  background-image: url("https://cdn-image.staticsfly.com/i/store/WF718029_Assets/WF718029_Prints_marquee_2.jpg?impolicy=resize&width=1600");
+  
+}
+
 :root {
   /* #region  /**=========== Primary Color =========== */
   /* !STARTERCONF Customize these variable, copy and paste from /styles/colors.css for list of colors */
