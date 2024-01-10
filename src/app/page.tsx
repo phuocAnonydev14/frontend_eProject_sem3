@@ -60,7 +60,106 @@ export default function HomePage() {
             </Flex>
           </Col>
         </Row>
-        
+      </div>
+
+      <div className='container mx-auto my-3'>
+        <p className='my-2 text-center text-5xl font-bold'>
+          Print In Different Shapes and Sizes
+        </p>
+        <Row gutter={24} className='my-3'>
+          <Col span={8}>
+            <p className='my-2 text-center text-4xl '>Standard Size</p>
+            <div className='h-[35rem] overflow-hidden '>
+              <img
+                src='https://photo.jessops.com/wp-content/uploads/2018/06/64NEW-768x768.jpg '
+                alt=''
+                className='h-full '
+              />
+            </div>
+            <Row className='my-2'>
+              <Col span={12}>
+                <p className='mx-4 text-left text-xl'>4x6</p>
+                <p className='mx-4 text-left text-xl'>5x7</p>
+                <p className='mx-4 text-left text-xl'>8x10</p>
+                <p className='mx-4 text-left text-xl'>Wallet (4)</p>
+              </Col>
+              <Col span={12}>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $0.20 ea.
+                </p>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $1.09 ea.
+                </p>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $3.95 ea.
+                </p>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $1.99 ea.
+                </p>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={8}>
+            <p className='my-2 text-center text-4xl '>Square Size</p>
+            <div className='h-[35rem] overflow-hidden '>
+              <img
+                src='https://www.printwich.com/images/products/4/6.jpg'
+                alt=''
+                className='h-full '
+              />
+            </div>
+            <Row className='my-2'>
+              <Col span={12}>
+                <p className='mx-4 text-left text-xl'>4x4</p>
+                <p className='mx-4 text-left text-xl'>8x8</p>
+                <p className='mx-4 text-left text-xl'>12x12</p>
+              </Col>
+              <Col span={12}>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $0.29 ea.
+                </p>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $3.49 ea.
+                </p>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $6.99 ea.
+                </p>
+              </Col>
+            </Row>
+          </Col>
+          <Col span={8}>
+            <p className='my-2 text-center text-4xl'>Large Size</p>
+            <div className='h-[35rem] overflow-hidden '>
+              <img
+                src='https://brantinstore.com/wp-content/uploads/2017/09/large-format-printing.jpg'
+                alt=''
+                className='h-full '
+              />
+            </div>
+            <Row className='my-2'>
+              <Col span={12}>
+                <p className='mx-4 text-left text-xl'>11x14</p>
+                <p className='mx-4 text-left text-xl'>12x12</p>
+                <p className='mx-4 text-left text-xl'>16x20</p>
+                <p className='mx-4 text-left text-xl'>20x30</p>
+              </Col>
+              <Col span={12}>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $10.99 ea.
+                </p>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $6.99 ea.
+                </p>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $19.99 ea.
+                </p>
+                <p className='mx-4 text-right text-xl text-yellow-600'>
+                  $24.99 ea.
+                </p>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       </div>
     </main>
   );
