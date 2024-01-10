@@ -13,7 +13,7 @@ export function AppLayout({children}: PropsWithChildren) {
 	
 	return <Layout style={{background: token.colorBgBase}}>
 		<Header />
-		<div style={{background: token.colorBgBase,minHeight:"1000px"}}>
+		<div style={{background: token.colorBgBase,minHeight:"95dvh"}}>
 			{children}
 		</div>
 		<div>

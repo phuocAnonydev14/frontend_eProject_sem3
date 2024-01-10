@@ -1,19 +1,22 @@
 "use client"
 
 import {useRouter} from "next/navigation";
-import {Button, Input, Switch} from "antd";
+import {Button, Input, Switch, theme} from "antd";
 import {faPhotoFilm, faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import {useAppContext} from "@/app/providers/AppProvider";
+import styles from "./styles.module.scss"
 
 export const Header = () => {
 	
 	const router = useRouter()
 	const {setIsDarkTheme} = useAppContext()
+	const {token} = theme.useToken()
 	
-	return <div className={"h-12 w-full flex justify-between items-center p-6"}
-							style={{boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px"}}>
+	return <div className={`h-12 w-full flex justify-between items-center p-6 ${styles.wrapper}`}
+							style={{background:token.colorBgBase}}
+						>
 		<div>
 			<img onClick={() => router.push("/")} style={{width: 50, height: 50, cursor: "pointer"}}
 					 src="https://bizweb.dktcdn.net/100/091/193/themes/789472/assets/logo.svg?1701059146562" alt=""/>

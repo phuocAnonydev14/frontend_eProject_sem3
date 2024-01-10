@@ -19,7 +19,7 @@ export default function RootLayout({children}: PropsWithChildren) {
 	const {token} = theme.useToken()
 	
 	return (
-		<html>
+		<html suppressHydrationWarning={true}>
 		<body>
 		<AppProvider>
 			<AppLayout>
