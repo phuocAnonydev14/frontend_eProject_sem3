@@ -21,7 +21,7 @@ export async function POST(request: NextRequest, res: any) {
 	}
 	
 	
-	let fileList: string[] = []
+	const fileList: string[] = []
 	await Promise.all(
 		files.map(async (file: any) => {
 				const buffer = Buffer.from(await file.arrayBuffer());

@@ -145,7 +145,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 	// }, [retry, id]);
 	
 	return (
-		<Col xs={8} md={12} lg={8} xl={8}>
+		<Col xs={8} md={12} lg={8} xl={8} key={id}>
 			
 			<Card
 				hoverable
