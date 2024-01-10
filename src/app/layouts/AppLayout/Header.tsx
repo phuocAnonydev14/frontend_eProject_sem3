@@ -26,7 +26,7 @@ export const Header = () => {
 			{/*<Button icon={<FontAwesomeIcon icon={faUser} />} type={"primary"} onClick={() => router.push("/auth/sign-in")}>Login</Button>*/}
 			<Button icon={<FontAwesomeIcon icon={faUser}/>} type={"text"} onClick={() => router.push("/profile")}>Ho Huu
 				Phuoc</Button>
-			<Button type={"text"} icon={<FontAwesomeIcon icon={faPhotoFilm}/>}>Photos</Button>
+			<Button type={"text"} icon={<FontAwesomeIcon icon={faPhotoFilm}/>} onClick={() => router.push('/order')}>Photos</Button>
 		</div>
 	</div>
 }
