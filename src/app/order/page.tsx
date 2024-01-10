@@ -1,6 +1,6 @@
 "use client"
 
-import {Avatar, Button, Card, Col, Form, Input, Layout, Progress, Row, Typography, Image, Select} from "antd";
+import {Avatar, Button, Card, Col, Form, Input, Layout, Progress, Row, Typography, Image, Select, Empty} from "antd";
 import {useForm} from "antd/es/form/Form";
 import {memo, useCallback, useRef, useState} from "react";
 import {
@@ -25,6 +25,8 @@ import UploadPreview from "@rpldy/upload-preview";
 import {asUploadButton} from "@rpldy/upload-button";
 import PaymentForm from "@/app/order/components/CreditCard";
 import {MinusIcon} from "lucide-react";
+import {convertBlobToFile, handleCreateFolder} from "@/lib/utils";
+import axios from "axios";
 
 const mockEnhancer = getMockSenderEnhancer({delay: 2000});
 const enhancer = composeEnhancers(retryEnhancer, mockEnhancer);
@@ -86,11 +88,11 @@ export default function Order() {
 }
 
 
-const PreviewCard = memo((props: { id: any, url: any, name: any,setPreviews:any }) => {
+const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: any, handleRemoveImage: any }) => {
 	const [percent, setPercent] = useState(0);
 	const [itemState, setItemState] = useState(STATES.PROGRESS);
-	const {id, url, name,setPreviews} = props
-	const [quantities,setQuantities] = useState(1)
+	const {id, url, name, setPreviews, handleRemoveImage} = props
+	const [quantities, setQuantities] = useState(1)
 	
 	const abortItem = useAbortItem();
 	// const retry = useRetry();
@@ -98,6 +100,27 @@ const PreviewCard = memo((props: { id: any, url: any, name: any,setPreviews:any 
 	useItemProgressListener((item) => {
 		setPercent(item.completed);
 	}, id);
+	
+	const handleUploadFile = async () => {
+		convertBlobToFile(url).then(async (file) => {
+			if (file) {
+				try {
+					console.log("Converted file:", file);
+					// Bạn có thể thực hiện các hành động khác với file ở đây
+					const formData = new FormData();
+					formData.append("files", file)
+					formData.append("files", file)
+					const res = await axios.post('/api/upload', formData)
+					console.log({res})
+				} catch (e) {
+					console.log(e)
+				}
+			} else {
+				console.log("Failed to convert blob to file.");
+			}
+		});
+	}
+	
 	
 	useItemFinalizeListener((item) => {
 		setItemState(
@@ -134,7 +157,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any,setPreviews:any 
 							key="stop"
 							icon={<MinusOutlined/>}
 							onClick={() => {
-								if(quantities > 1) {
+								if (quantities > 1) {
 									setQuantities(prevState => prevState - 1)
 								}
 							}}
@@ -147,7 +170,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any,setPreviews:any 
 							key="stop"
 							icon={<PlusOutlined/>}
 							onClick={() => {
-									setQuantities(prevState => prevState + 1)
+								setQuantities(prevState => prevState + 1)
 							}}
 							// disabled={itemState !== STATES.PROGRESS}
 							type="link"
@@ -156,9 +179,10 @@ const PreviewCard = memo((props: { id: any, url: any, name: any,setPreviews:any 
 					<Button
 						key="retry"
 						icon={<CloseOutlined/>}
-						onClick={() => {
-							console.log(setPreviews)
-							setPreviews((prevState:any) => prevState.filter((prev:any) => prev.id !== id))
+						onClick={async () => {
+							// handleRemoveImage(id)
+							// await handleCreateFolder('test')
+							await handleUploadFile()
 						}}
 						// disabled={!isItemError(itemState)}
 						type="link"
@@ -183,12 +207,13 @@ const PreviewCard = memo((props: { id: any, url: any, name: any,setPreviews:any 
 								}
 								status={isItemError(itemState) ? "exception" : undefined}
 							/>
-							<div >
+							<div>
 								<Typography.Title level={5}>Size:</Typography.Title>
-								<Select defaultValue={"lg"} style={{minWidth:"100px"}} options={[{value: "xl", label: "3x4"}, {value: "md", label: "3x4"}, {
-									value: "lg",
-									label: "3x4"
-								}, {value: "xs", label: "3x4"},]}/>
+								<Select defaultValue={"lg"} style={{minWidth: "100px"}}
+												options={[{value: "xl", label: "3x4"}, {value: "md", label: "3x4"}, {
+													value: "lg",
+													label: "3x4"
+												}, {value: "xs", label: "3x4"},]}/>
 							</div>
 						</div>
 					}
@@ -200,8 +225,13 @@ const PreviewCard = memo((props: { id: any, url: any, name: any,setPreviews:any 
 });
 
 const UploadPreviewCards = ({previewMethodsRef, setPreviews}: any) => {
+	
+	const handleRemoveImage = (id: string) => {
+		return previewMethodsRef.current.removePreview(id)
+	}
+	
 	const getPreviewProps = useCallback(
-		(item: any) => ({id: item.id, name: item.file.name,setPreviews}),
+		(item: any) => ({id: item.id, name: item.file.name, setPreviews, handleRemoveImage}),
 		[]
 	);
 	
@@ -224,6 +254,8 @@ const UploadButton = asUploadButton(Button);
 const UploadUi = () => {
 	const previewMethodsRef = useRef<any>();
 	const [previews, setPreviews] = useState([]);
+	
+	console.log(previews)
 	
 	const onClearPreviews = useCallback(() => {
 		previewMethodsRef.current?.clear();
@@ -252,12 +284,14 @@ const UploadUi = () => {
 				</Button>
 			</div>
 			<div>
+				{previews.length === 0
+					&& <Empty className={"mt-20"} description={"Upload your avatar"}/>
+				}
 				<UploadPreviewCards
 					setPreviews={setPreviews}
 					previewMethodsRef={previewMethodsRef}
 				/>
 			</div>
-			<div>Previews Shown: {previews.length}</div>
 		</div>
 	);
 };
