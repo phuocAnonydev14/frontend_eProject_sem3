@@ -3,6 +3,7 @@
 import Head from 'next/head';
 import * as React from 'react';
 import { Button, Col, Flex, Row, Typography } from 'antd';
+import { LikeOutlined, SmileOutlined, StarOutlined } from '@ant-design/icons';
 
 export default function HomePage() {
   return (
@@ -225,12 +226,37 @@ export default function HomePage() {
           <p className='text-4xl text-slate-200'>
             Add Your Designs & Art to Favorite Products
           </p>
-          <p className='text-xl text-slate-100 w-[45rem]'>
+          <p className='w-[45rem] text-xl text-slate-100'>
             Use our high-quality printing and materials for any digital files
             you’ve purchased or created yourself and express your creativity
             throughout your home.
           </p>
         </div>
+      </div>
+
+      <div className='container mx-auto my-3 bg-slate-700 text-slate-100 p-5'>
+        <p className='text-center text-5xl my-5'>Our Promise To You</p>
+
+        <Row className='p-5'>
+          <Col span={8}>
+            <div className='flex flex-col text-slate-300 items-center justify-center'>
+              <SmileOutlined className='text-8xl' />
+              <p className='my-2 text-4xl'>Satisfaction Guaranteed</p>
+            </div>
+          </Col>
+          <Col span={8}>
+            <div className='flex flex-col items-center justify-center'>
+              <StarOutlined className='text-8xl'/>
+              <p className='my-2 text-4xl'>Special to You</p>
+            </div>
+          </Col>
+          <Col span={8}>
+            <div className='flex flex-col items-center justify-center'>
+              <LikeOutlined className='text-8xl' />
+              <p className='my-2 text-4xl'>Just The Way You Like</p>
+            </div>
+          </Col>
+        </Row>
       </div>
     </main>
   );
