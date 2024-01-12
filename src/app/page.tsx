@@ -62,8 +62,8 @@ export default function HomePage() {
         </Row>
       </div>
 
-      <div className='container mx-auto my-3'>
-        <p className='my-2 text-center text-5xl font-bold'>
+      <div className='container mx-auto my-3 p-3'>
+        <p className='my-2 text-center font-sans text-5xl font-bold'>
           Print In Different Shapes and Sizes
         </p>
         <Row gutter={24} className='my-3'>
@@ -160,6 +160,77 @@ export default function HomePage() {
             </Row>
           </Col>
         </Row>
+      </div>
+
+      <div className='container mx-auto my-3 bg-slate-200'>
+        <p className='p-5 text-center text-4xl'>
+          Upload Your Photos With Any Device
+        </p>
+      </div>
+
+      <div className='container mx-auto my-3 '>
+        <p className='p-5 text-center font-sans text-4xl font-bold'>
+          Discover New Ways to Display Your Photos & More
+        </p>
+        <Row className=''>
+          <Col span={8}>
+            <div className='flex flex-row items-center'>
+              <div>
+                <img
+                  src='https://web.shutterfly.com/i/landingpages/WF466453_1d_Desktop_5-Up_ArtPrints_290x290.webp'
+                  className='h-80 overflow-hidden'
+                  alt=''
+                />
+              </div>
+              <div>
+                <span className='text-right text-2xl'>Art Prints</span>
+              </div>
+            </div>
+          </Col>
+          <Col span={8}>
+            <div className='flex flex-row items-center'>
+              <div>
+                <img
+                  src='https://cdn-image.staticsfly.com/i/landingpages/WF308692_Deliverables/Desktop/2_5up/WF308692_2a_Desktop_5-Up_FramedPrints_290x290.webp'
+                  alt=''
+                  className='h-80'
+                />
+              </div>
+              <div>
+                <span className='text-right text-2xl'>Framed Photos</span>
+              </div>
+            </div>
+          </Col>
+          <Col span={8}>
+            <div className='flex flex-row items-center'>
+              <div>
+                <img
+                  src='https://cdn-image.staticsfly.com/i/landingpages/WF308692_Deliverables/Desktop/1_5up/WF308692_1a_Desktop_5-Up_CollagePosters_290x290.webp'
+                  alt=''
+                  className='h-80'
+                />
+              </div>
+              <div>
+                <span className='text-right text-2xl'>Collage Posters</span>
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </div>
+      <div
+        className='container mx-auto my-3 flex h-56 items-center justify-start'
+        id='home_second_banner'
+      >
+        <div className='mx-5 '>
+          <p className='text-4xl text-slate-200'>
+            Add Your Designs & Art to Favorite Products
+          </p>
+          <p className='text-xl text-slate-100 w-[45rem]'>
+            Use our high-quality printing and materials for any digital files
+            you’ve purchased or created yourself and express your creativity
+            throughout your home.
+          </p>
+        </div>
       </div>
     </main>
   );

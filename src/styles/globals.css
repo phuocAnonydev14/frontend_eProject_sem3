@@ -13,6 +13,10 @@
   
 }
 
+#home_second_banner {
+  background-image: url("https://cdn-image.staticsfly.com/i/store/WF693300_Assets/WF693300_prints_cat_DigitalPrints.jpg?impolicy=resize&width=1600");
+}
+
 :root {
   /* #region  /**=========== Primary Color =========== */
   /* !STARTERCONF Customize these variable, copy and paste from /styles/colors.css for list of colors */
