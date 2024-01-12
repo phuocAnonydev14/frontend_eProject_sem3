@@ -239,7 +239,7 @@ export default function HomePage() {
 
         <Row className='p-5'>
           <Col span={8}>
-            <div className='flex flex-col text-slate-300 items-center justify-center'>
+            <div className='flex flex-col  items-center justify-center'>
               <SmileOutlined className='text-8xl' />
               <p className='my-2 text-4xl'>Satisfaction Guaranteed</p>
             </div>
