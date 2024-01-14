@@ -6,6 +6,7 @@ import {Card, Menu, Typography} from "antd";
 import {useCallback, useState} from "react";
 import {EditUser} from "@/app/profile/components/EditUser";
 import {ChangePassword} from "@/app/profile/components/ChangePassword";
+import OrderHistory from "@/app/profile/components/OrderHistory";
 
 export default function Profile() {
 	
@@ -39,7 +40,7 @@ export default function Profile() {
 				return <ChangePassword />
 			}
 			default: {
-				return <EditUser/>
+				return <OrderHistory />
 			}
 		}
 	}, [selectedKey])
