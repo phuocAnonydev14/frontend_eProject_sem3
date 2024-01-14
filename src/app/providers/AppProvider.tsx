@@ -12,10 +12,10 @@ export default function AppProvider({children}: PropsWithChildren) {
 	const router = useRouter()
 	const [isDarkTheme, setIsDarkTheme] = useState(false);
 	const {defaultAlgorithm, darkAlgorithm} = theme;
-	
+	const [account,setAccount] = useState<any>(null)
 	
 	return (
-		<AppContext.Provider value={{setIsDarkTheme: (check: boolean) => setIsDarkTheme(check)}}>
+		<AppContext.Provider value={{setIsDarkTheme: (check: boolean) => setIsDarkTheme(check),account,setAccount}}>
 			<ConfigProvider
 				theme={{
 					token: {

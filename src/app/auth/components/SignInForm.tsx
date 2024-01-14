@@ -3,12 +3,17 @@
 import {Button, ConfigProvider, Divider, Form, Input, Typography} from "antd";
 import Link from "next/link";
 import AuthFormHeader from "@/app/auth/components/AuthFormHeader";
+import {useAppContext} from "@/app/providers/AppProvider";
+import {useRouter} from "next/navigation";
 
 export const SignInForm = () => {
-	
+	const {setAccount} = useAppContext()
+	const router = useRouter()
 	
 	const submitBasicAuth = (vals: any) => {
 		console.log(vals)
+		setAccount(true)
+		router.push("/")
 	}
 	
 	return <div style={{flex: 1, minWidth: "50%"}}>

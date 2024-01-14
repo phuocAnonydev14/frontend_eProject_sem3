@@ -11,12 +11,12 @@ export function AppLayout({children}: PropsWithChildren) {
 	const {token} = theme.useToken()
 	if (pathname.includes("auth")) return <div>{children}</div>
 	
-	return <Layout style={{background: token.colorBgBase}}>
+	return <div style={{background: token.colorBgBase}}>
 		<Header />
 		<div style={{background: token.colorBgBase,minHeight:"95dvh"}}>
 			{children}
 		</div>
 		<div>
 		</div>
-	</Layout>
+	</div>
 }
