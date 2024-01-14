@@ -1,8 +1,23 @@
 "use client"
 
-import {Avatar, Button, Card, Col, Form, Input, Layout, Progress, Row, Typography, Image, Select, Empty} from "antd";
+import {
+	Avatar,
+	Button,
+	Card,
+	Col,
+	Form,
+	Input,
+	Layout,
+	Progress,
+	Row,
+	Typography,
+	Image,
+	Select,
+	Empty,
+	Divider, message
+} from "antd";
 import {useForm} from "antd/es/form/Form";
-import {memo, useCallback, useRef, useState} from "react";
+import {memo, useCallback, useEffect, useRef, useState} from "react";
 import {
 	CloseOutlined,
 	CloudUploadOutlined,
@@ -24,9 +39,11 @@ import {getMockSenderEnhancer} from "@rpldy/mock-sender";
 import UploadPreview from "@rpldy/upload-preview";
 import {asUploadButton} from "@rpldy/upload-button";
 import PaymentForm from "@/app/order/components/CreditCard";
-import {MinusIcon} from "lucide-react";
-import {convertBlobToFile, handleCreateFolder} from "@/lib/utils";
+import {convertBlobToFile, handleCreateFolder, stringToHash} from "@/lib/utils";
 import axios from "axios";
+import {IOrder, useOrderContext} from "@/app/order/layout";
+import {awaitExpression} from "@babel/types";
+// import bcrypt from "bcrypt"
 
 const mockEnhancer = getMockSenderEnhancer({delay: 2000});
 const enhancer = composeEnhancers(retryEnhancer, mockEnhancer);
@@ -42,13 +59,63 @@ const isItemError = (state: any) =>
 	state === STATES.ABORTED || state === STATES.ERROR;
 
 export default function Order() {
-	
 	const [form] = useForm()
+	const {setOrder, order} = useOrderContext()
+	const [orderItems, setOrderItems] = useState<any>([])
+	const [loading, setLoading] = useState(false)
 	
 	const handleFinish = async (values: any) => {
+		// setLoading(true)
+		let orderPayload: IOrder = {...order} as IOrder
+		// if (!orderPayload.credit_cvv || !orderPayload.credit_number || orderPayload.order_items.length === 0) {
+		// 	return message.error("Please fill in all requirement")
+		// }
+		
+		let orderItemConverted = []
+		await Promise.all(
+			orderPayload.order_items.map(async ({url, size, quantity}) => {
+				const file = await convertBlobToFile(url as string)
+				orderItemConverted.push(file)
+			})
+		)
+		
+		const hashedCreditNumber = stringToHash(orderPayload.credit_number)
+		let total = 0
+		orderPayload.order_items.forEach(item => {
+			total += item.quantity
+		})
+		try {
+			// Bạn có thể thực hiện các hành động khác với file ở đây
+			const formData = new FormData();
+			orderItemConverted.forEach(item => {
+				formData.append("files", item)
+			})
+			const res = (await axios.post('/api/upload', formData)).data
+			let orderRequest = {
+				credit_number: hashedCreditNumber,
+				...values,
+				status: "0",
+				total,
+				payment_type: "banking",
+				payment_status: "success",
+				credit_cvv: orderPayload.credit_cvv,
+				folder_name: res.folder,
+				order_items: orderPayload.order_items.map((item, index) => ({
+					image: orderItemConverted[index],
+					quantity: item.quantity,
+					size: item.size
+				}))
+			}
+			console.log({res})
+			message.success("Order successfully")
+		} catch (e) {
+			console.log(e)
+		} finally {
+			setLoading(false)
+		}
+		
 		return
 	}
-	
 	
 	return <div className={"px-5"} suppressHydrationWarning>
 		<Card>
@@ -61,24 +128,37 @@ export default function Order() {
 					<Row gutter={[16, 16]}>
 						<Col xs={24} md={24} lg={14} xl={14}>
 							<div>
-								<UploadUi/>
+								<UploadUi setOrderItems={setOrderItems}/>
 							</div>
 						</Col>
 						<Col xs={24} md={24} lg={10} xl={10}>
 							<div style={{paddingLeft: "10px"}}>
 								<Typography.Title level={3}>Checkout information</Typography.Title>
-								<Form.Item label={"Full name"} name={"fullName"}>
+								<Form.Item label={"Full name"} name={"fullName"} rules={[{required: true}]}>
 									<Input placeholder={"Enter full name..."}/>
 								</Form.Item>
-								<Form.Item label={"Address"} name={"address"}>
-									<Input placeholder={"Enter address..."}/>
+								<Form.Item label={"Address"} name={"address"} rules={[{required: true}]}>
+									<Input.TextArea placeholder={"Enter address..."}/>
 								</Form.Item>
-								<Form.Item label={"Phone number"} name={"phoneNumber"}>
+								<Form.Item label={"Phone number"} name={"phoneNumber"} rules={[{required: true}]}>
 									<Input placeholder={"Enter phone number..."}/>
 								</Form.Item>
-								
 								<PaymentForm/>
 							</div>
+							<Divider/>
+							<div className={'flex justify-between items-center'}>
+								<Typography.Title level={5}>Total:</Typography.Title>
+								<Typography.Title level={5}>{order.total || 1}</Typography.Title>
+							</div>
+							<div className={'flex justify-between items-center'}>
+								<Typography.Title level={5}>Price:</Typography.Title>
+								<Typography.Title level={5}>{new Intl.NumberFormat('vi-VN', {
+									style: 'currency',
+									currency: 'VND'
+								}).format(1000)}</Typography.Title>
+							</div>
+							<Button loading={loading} htmlType={"submit"} onClick={handleFinish} className={"my-4"} type={"primary"}
+											block>Checkout</Button>
 						</Col>
 					</Row>
 				</Form>
@@ -93,6 +173,8 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 	const [itemState, setItemState] = useState(STATES.PROGRESS);
 	const {id, url, name, setPreviews, handleRemoveImage} = props
 	const [quantities, setQuantities] = useState(1)
+	const [selectedSize, setSelectedSize] = useState("xl")
+	const {setOrder, order} = useOrderContext()
 	
 	const abortItem = useAbortItem();
 	// const retry = useRetry();
@@ -102,23 +184,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 	}, id);
 	
 	const handleUploadFile = async () => {
-		convertBlobToFile(url).then(async (file) => {
-			if (file) {
-				try {
-					console.log("Converted file:", file);
-					// Bạn có thể thực hiện các hành động khác với file ở đây
-					const formData = new FormData();
-					formData.append("files", file)
-					formData.append("files", file)
-					const res = await axios.post('/api/upload', formData)
-					console.log({res})
-				} catch (e) {
-					console.log(e)
-				}
-			} else {
-				console.log("Failed to convert blob to file.");
-			}
-		});
+	
 	}
 	
 	
@@ -140,9 +206,21 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 		abortItem(id);
 	}, [abortItem, id]);
 	
-	// const onRetry = useCallback(() => {
-	// 	retry(id);
-	// }, [retry, id]);
+	useEffect(() => {
+		const updatedOrderItem = order.order_items.map(order => {
+			if (order.url === url) {
+				return {
+					url, size: selectedSize,
+					quantity: quantities
+				}
+			} else {
+				return order
+			}
+		})
+		
+		
+		setOrder(state => ({...state, order_items: updatedOrderItem}))
+	}, [quantities, selectedSize]);
 	
 	return (
 		<Col xs={8} md={12} lg={8} xl={8} key={id}>
@@ -163,7 +241,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 							}}
 							// disabled={itemState !== STATES.PROGRESS}
 							type="link"
-							
+						
 						/>
 						<Typography.Text>{quantities}</Typography.Text>
 						<Button
@@ -209,11 +287,15 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 							/>
 							<div>
 								<Typography.Title level={5}>Size:</Typography.Title>
-								<Select defaultValue={"lg"} style={{minWidth: "100px"}}
-												options={[{value: "xl", label: "3x4"}, {value: "md", label: "3x4"}, {
-													value: "lg",
-													label: "3x4"
-												}, {value: "xs", label: "3x4"},]}/>
+								<Select
+									defaultValue={"lg"} style={{minWidth: "100px"}}
+									options={[{value: "xl", label: "3x4"}, {value: "md", label: "3x4"}, {
+										value: "lg",
+										label: "3x4"
+									}, {value: "xs", label: "3x4"},]}
+									value={selectedSize}
+									onChange={(size) => setSelectedSize(size)}
+								/>
 							</div>
 						</div>
 					}
@@ -251,14 +333,24 @@ const UploadPreviewCards = ({previewMethodsRef, setPreviews}: any) => {
 
 const UploadButton = asUploadButton(Button);
 
-const UploadUi = () => {
+const UploadUi = ({setOrderItems}: any) => {
 	const previewMethodsRef = useRef<any>();
 	const [previews, setPreviews] = useState([]);
+	const {setOrder, order} = useOrderContext()
 	
-	console.log(previews)
+	useEffect(() => {
+		console.log(previews)
+		if (previews.length > 0) {
+			setOrder(state => ({
+				...state,
+				order_items: [...state.order_items, {url: previews[previews.length - 1].url, size: '1', quantity: 1}]
+			}))
+		}
+	}, [previews]);
 	
 	const onClearPreviews = useCallback(() => {
 		previewMethodsRef.current?.clear();
+		setOrder(state => ({...state, order_items: []}))
 	}, [previewMethodsRef]);
 	
 	return (

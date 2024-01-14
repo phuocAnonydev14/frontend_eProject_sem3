@@ -22,12 +22,12 @@ export async function POST(request: NextRequest, res: any) {
 	
 	
 	const fileList: string[] = []
+	const relativeUploadDir = `${dateFn.format(Date.now(), "dd-MM-Y-ss")}`;
 	await Promise.all(
 		files.map(async (file: any) => {
 				const buffer = Buffer.from(await file.arrayBuffer());
 				
 				const pathDist: string = join(process.cwd(), "/public/images");
-				const relativeUploadDir = `${dateFn.format(Date.now(), "dd-MM-Y")}`;
 				const uploadDir = join(pathDist, relativeUploadDir);
 				
 				
@@ -60,19 +60,18 @@ export async function POST(request: NextRequest, res: any) {
 					}
 				}
 			}
-		
 		))
-			
-			
-			try {
-				
-				return NextResponse.json({done: "ok", files: fileList}, {status: 200});
-				
-			} catch (e) {
-				console.error("Error while trying to upload a file\n", e);
-				return NextResponse.json(
-					{error: "Something went wrong."},
-					{status: 500}
-				);
-			}
-		}
+	
+	
+	try {
+		
+		return NextResponse.json({done: "ok", files: fileList, folder: relativeUploadDir}, {status: 200});
+		
+	} catch (e) {
+		console.error("Error while trying to upload a file\n", e);
+		return NextResponse.json(
+			{error: "Something went wrong."},
+			{status: 500}
+		);
+	}
+}

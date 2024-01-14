@@ -33,6 +33,7 @@
     "antd": "^5.12.4",
     "antd-img-crop": "^4.21.0",
     "axios": "^1.6.5",
+    "bcrypt": "^5.1.1",
     "clsx": "^2.0.0",
     "date-fns": "^3.2.0",
     "formidable": "^3.5.1",
