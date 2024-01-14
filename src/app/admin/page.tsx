@@ -1,3 +1,7 @@
+import {Typography} from "antd";
+
 export default function AdminPage(){
-	return <div></div>
+	return <div>
+		<Typography.Text>admin page</Typography.Text>
+	</div>
 }

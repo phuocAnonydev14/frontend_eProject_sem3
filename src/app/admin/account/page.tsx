@@ -1,7 +1,9 @@
 'use client'
 
+import {Typography} from "antd";
+
 export default function AccountPage() {
 	return <div>
-		this is account page
+		<Typography.Text>this is account page</Typography.Text>
 	</div>
 }
