@@ -17,7 +17,7 @@ import {
 	Divider, message
 } from "antd";
 import {useForm} from "antd/es/form/Form";
-import {memo, useCallback, useEffect, useRef, useState} from "react";
+import {memo, useCallback, useContext, useEffect, useRef, useState} from "react";
 import {
 	CloseOutlined,
 	CloudUploadOutlined,
@@ -41,10 +41,9 @@ import {asUploadButton} from "@rpldy/upload-button";
 import PaymentForm from "@/app/order/components/CreditCard";
 import {convertBlobToFile, handleCreateFolder, stringToHash} from "@/lib/utils";
 import axios from "axios";
-import {IOrder, useOrderContext} from "@/app/order/layout";
 import {awaitExpression} from "@babel/types";
+import {IOrder, useOrderContext} from "@/app/order/components/OrderProvider";
 // import bcrypt from "bcrypt"
-
 const mockEnhancer = getMockSenderEnhancer({delay: 2000});
 const enhancer = composeEnhancers(retryEnhancer, mockEnhancer);
 // const enhancer = composeEnhancers(mockEnhancer);

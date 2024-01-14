@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import {Col, Divider, Input, Row, Typography} from "antd";
-import {useOrderContext} from "@/app/order/layout";
+import {useOrderContext} from "@/app/order/components/OrderProvider";
 
 const PaymentForm = () => {
 	const [state, setState] = useState({
