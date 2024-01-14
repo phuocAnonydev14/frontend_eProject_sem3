@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useMemo} from 'react';
 import {Menu} from 'antd';
 import SubMenu from "antd/es/menu/SubMenu";
