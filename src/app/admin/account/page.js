@@ -251,6 +251,7 @@ export default function AccountPage() {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
+						...getColumnSearchProps('email'),
           },
           {
             title: 'First Name',
@@ -271,7 +272,7 @@ export default function AccountPage() {
             title: 'Gender',
             dataIndex: 'gender',
             key: 'gender',
-            render: (type: 1 | 2) => (
+            render: (type) => (
               <>{type === 1 ? <span>Male</span> : <span>Female</span>}</>
             ),
             filters: [
@@ -300,7 +301,7 @@ export default function AccountPage() {
             title: 'Role',
             dataIndex: 'role',
             key: 'role',
-            render: (type: 0 | 1) => (
+            render: (type) => (
               <>
                 {type === 1 ? (
                   <Tag color={'red'}>Admin</Tag>
