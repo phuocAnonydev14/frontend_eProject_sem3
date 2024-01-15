@@ -31,7 +31,7 @@ const dashBoardNavTree = [
 		icon: faEnvelope,
 		breadcrumb: false,
 		children: []
-	},
+	}
 ];
 
 const navigationConfig = [...dashBoardNavTree];
@@ -78,7 +78,7 @@ const MenuContent = () => {
 		>
 			{renderMenuItems([...navigationConfig])}
 		</Menu>
-	);
+	)
 };
 
 export default MenuContent

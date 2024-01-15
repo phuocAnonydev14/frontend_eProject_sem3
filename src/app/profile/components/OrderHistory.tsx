@@ -121,8 +121,8 @@ const mockData = [
 export default function OrderHistory() {
 	
 	const [value, setValue] = useState<string>('')
-	const [loading, setLoading] = useState(false)
 	const debouncedValue = useDebounce<string>(value, 500)
+	const [loading, setLoading] = useState(false)
 	const [data, setData] = useState(mockData)
 	
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
