@@ -240,6 +240,7 @@ export default function AccountPage() {
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
+            ...getColumnSearchProps('username'),  
           },
           {
             title: 'Username',
