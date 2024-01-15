@@ -1,5 +1,4 @@
 'use client';
-
 import { Table, TableColumnType, Tag, Typography } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
@@ -7,6 +6,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space } from 'antd';
 
 export default function AccountPage() {
+  console.log("come")
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -240,7 +240,7 @@ export default function AccountPage() {
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
-            ...getColumnSearchProps('username'),  
+            ...getColumnSearchProps('username'),
           },
           {
             title: 'Username',
@@ -313,7 +313,7 @@ export default function AccountPage() {
             ),
           },
         ]}
-        pagination={false}
+        pagination={{size:"default"}}
         dataSource={dataSource}
       />{' '}
     </div>

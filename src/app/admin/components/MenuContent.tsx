@@ -4,7 +4,7 @@ import React, {useMemo} from 'react';
 import {Menu} from 'antd';
 import SubMenu from "antd/es/menu/SubMenu";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {faEnvelope, faHouse} from "@fortawesome/free-solid-svg-icons";
 
 
@@ -38,8 +38,8 @@ const navigationConfig = [...dashBoardNavTree];
 
 
 const MenuContent = () => {
-	const {pathname} = location;
 	const router = useRouter()
+	const pathname = usePathname()
 	const renderMenuItems = useMemo(() => (data: any[]) => {
 		return data.map(item => {
 			if (item.children && item.children.length > 0) {
