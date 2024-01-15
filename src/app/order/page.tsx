@@ -147,14 +147,14 @@ export default function Order() {
 							<Divider/>
 							<div className={'flex justify-between items-center'}>
 								<Typography.Title level={5}>Total:</Typography.Title>
-								<Typography.Title level={5}>{order.total || 1}</Typography.Title>
+								<Typography.Title level={5}>{order.total}</Typography.Title>
 							</div>
 							<div className={'flex justify-between items-center'}>
 								<Typography.Title level={5}>Price:</Typography.Title>
 								<Typography.Title level={5}>{new Intl.NumberFormat('vi-VN', {
 									style: 'currency',
 									currency: 'VND'
-								}).format(1000)}</Typography.Title>
+								}).format(20000 * order.total)}</Typography.Title>
 							</div>
 							<Button loading={loading} htmlType={"submit"} onClick={handleFinish} className={"my-4"} type={"primary"}
 											block>Checkout</Button>
@@ -257,9 +257,9 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 						key="retry"
 						icon={<CloseOutlined/>}
 						onClick={async () => {
-							// handleRemoveImage(id)
+							handleRemoveImage(id)
 							// await handleCreateFolder('test')
-							await handleUploadFile()
+							// await handleUploadFile()
 						}}
 						// disabled={!isItemError(itemState)}
 						type="link"
@@ -342,7 +342,8 @@ const UploadUi = ({setOrderItems}: any) => {
 		if (previews.length > 0) {
 			setOrder(state => ({
 				...state,
-				order_items: [...state.order_items, {url: previews[previews.length - 1].url, size: '1', quantity: 1}]
+				order_items: [...state.order_items, {url: previews[previews.length - 1].url, size: '1', quantity: 1}],
+				total:previews.length
 			}))
 		}
 	}, [previews]);

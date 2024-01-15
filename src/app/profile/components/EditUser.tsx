@@ -1,13 +1,25 @@
-import {Button, Card, Col, DatePicker, Divider, Form, Input, Row, Select, Spin, Typography} from "antd";
+import {Button, Card, Col, DatePicker, Divider, Form, Input, message, Row, Select, Spin, Typography} from "antd";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBookSkull, faPenToSquare} from "@fortawesome/free-solid-svg-icons";
 import styles from "./styles.module.scss"
 import {ProfileAvatar} from "@/app/profile/components/ProfileAvatar";
+import {useState} from "react";
 export const EditUser = () => {
+	
+	const [loading,setLoading] = useState(false)
+	
+	const onFinish = async () => {
+		setLoading(true)
+		setTimeout(() => {
+			message.success("Update profile successfully")
+			setLoading(false)
+		},2000)
+	}
+	
 	return <Spin spinning={false}>
 		<Card>
 			<Form
-				// onFinish={onFinish}
+				onFinish={onFinish}
 				// form={form}
 				labelCol={{flex: '128px'}}
 				labelAlign="left"
@@ -24,6 +36,7 @@ export const EditUser = () => {
 						</Typography.Paragraph>
 					</div>
 					<Button
+						loading={loading}
 						type={'primary'}
 						htmlType={'submit'}
 						icon={<FontAwesomeIcon icon={faPenToSquare}/>}

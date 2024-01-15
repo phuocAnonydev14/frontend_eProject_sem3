@@ -1,12 +1,13 @@
 "use client"
 
 import {useRouter} from "next/navigation";
-import {Button, Input, Switch, theme} from "antd";
+import {Button, Dropdown, Input, Switch, theme} from "antd";
 import {faPhotoFilm, faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import {useAppContext} from "@/app/providers/AppProvider";
 import styles from "./styles.module.scss"
+import {EditOutlined, ProfileOutlined} from "@ant-design/icons";
 
 export const Header = () => {
 	
@@ -29,8 +30,18 @@ export const Header = () => {
 								onClick={() => router.push("/auth/sign-in")}>Login</Button>
 				:
 				<div>
-					<Button icon={<FontAwesomeIcon icon={faUser}/>} type={"text"} onClick={() => router.push("/profile")}>Ho Huu
-						Phuoc</Button>
+					<Dropdown menu={{
+						items: [{label: "Profile", key: "profile", icon: <ProfileOutlined/>}, {
+							label: "Manage",
+							key: "admin/account",
+							icon:<EditOutlined />
+						}], onClick: ({key}) => {
+							router.push(`/${key}`)
+						}
+					}}>
+						<Button icon={<FontAwesomeIcon icon={faUser}/>} type={"text"} >Ho Huu
+							Phuoc</Button>
+					</Dropdown>
 					<Button type={"text"} icon={<FontAwesomeIcon icon={faPhotoFilm}/>}
 									onClick={() => router.push('/order')}>Order</Button>
 				</div>

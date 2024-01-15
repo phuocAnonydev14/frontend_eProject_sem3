@@ -3,7 +3,7 @@ import {useForm} from "antd/es/form/Form";
 import {useWatch} from "rc-field-form/lib";
 import {useMemo} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBomb, faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faBomb, faCheck, faPenNib} from "@fortawesome/free-solid-svg-icons";
 
 export const ChangePassword = () => {
 	const [form] = useForm();
@@ -70,7 +70,7 @@ export const ChangePassword = () => {
 								return (<Col xs={24} md={24} key={policy?.key}>
 									<div className={'mb-4'}>
 										<FontAwesomeIcon color={"green"}
-																		 icon={policy?.isValid ? faCheck : faCheck}
+																		 icon={policy?.isValid ? faCheck : faPenNib}
 										/>
 										<Typography.Text
 											style={{fontSize: 13}}

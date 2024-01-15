@@ -17,7 +17,7 @@ export enum RoleEnum {
 
 const dashBoardNavTree = [
 	{
-		key: 'account',
+		key: 'admin/account',
 		path: `/admin/account`,
 		title: 'Account',
 		icon: faHouse,
@@ -25,8 +25,8 @@ const dashBoardNavTree = [
 		children: [],
 	},
 	{
-		key: 'order',
-		path: `/mail/inbox`,
+		key: 'admin/order',
+		path: `/admin/order`,
 		title: 'Order',
 		icon: faEnvelope,
 		breadcrumb: false,
