@@ -1,5 +1,5 @@
 import {extname, join} from "path";
-import {stat, mkdir, writeFile} from "fs/promises";
+import {stat, mkdir, writeFile, rmdir} from "fs/promises";
 import * as dateFn from "date-fns";
 import {NextRequest, NextResponse} from "next/server";
 
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest, res: any) {
 	
 	
 	const fileList: string[] = []
-	const relativeUploadDir = `${dateFn.format(Date.now(), "dd-MM-Y-ss")}`;
+	const relativeUploadDir = `printer_${dateFn.format(Date.now(), "dd-MM-Y-ss")}`;
 	await Promise.all(
 		files.map(async (file: any) => {
 				const buffer = Buffer.from(await file.arrayBuffer());
@@ -64,14 +64,25 @@ export async function POST(request: NextRequest, res: any) {
 	
 	
 	try {
-		
 		return NextResponse.json({done: "ok", files: fileList, folder: relativeUploadDir}, {status: 200});
-		
 	} catch (e) {
 		console.error("Error while trying to upload a file\n", e);
 		return NextResponse.json(
 			{error: "Something went wrong."},
 			{status: 500}
 		);
+	}
+}
+
+
+export async function DELETE(request: NextRequest) {
+	const {folderName} = request.body as any
+	try {
+		await rmdir(folderName);
+		console.log('Folder deleted successfully.');
+		return NextResponse.json({message: "Delete folder successfully"}, {status: 200});
+		
+	} catch (err) {
+		console.error('Error deleting folder:', err);
 	}
 }

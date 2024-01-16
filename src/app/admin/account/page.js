@@ -232,7 +232,9 @@ export default function AccountPage() {
   ];
 
   const columns = (
-    <div className='container mx-auto'>
+    <div className='container  ml-10'>
+      <Typography.Title level={3}>Accounts management</Typography.Title>
+
       <Table
         bordered={true}
         columns={[

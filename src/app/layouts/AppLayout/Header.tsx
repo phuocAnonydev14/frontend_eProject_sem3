@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import {useAppContext} from "@/app/providers/AppProvider";
 import styles from "./styles.module.scss"
-import {EditOutlined, ProfileOutlined} from "@ant-design/icons";
+import {EditOutlined, LogoutOutlined, ProfileOutlined} from "@ant-design/icons";
 
 export const Header = () => {
 	
@@ -35,7 +35,13 @@ export const Header = () => {
 							label: "Manage",
 							key: "admin/account",
 							icon:<EditOutlined />
-						}], onClick: ({key}) => {
+						},
+							{
+								label: "Logout",
+								key: "auth/sign-in",
+								danger:true,
+								icon:<LogoutOutlined />
+							}], 	onClick: ({key}) => {
 							router.push(`/${key}`)
 						}
 					}}>

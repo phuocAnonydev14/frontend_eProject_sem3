@@ -1,9 +1,11 @@
 'use client'
 
-import {Input, Table} from "antd";
+import {Button, Input, Modal, Table, Tooltip, Typography} from "antd";
 import moment from "moment";
 import {ChangeEvent, useEffect, useState} from "react";
 import {useDebounce} from "@/lib/hooks/useDebounce";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEye} from "@fortawesome/free-solid-svg-icons";
 
 
 const mockData = [
@@ -124,6 +126,7 @@ export default function OrderHistory() {
 	const debouncedValue = useDebounce<string>(value, 500)
 	const [loading, setLoading] = useState(false)
 	const [data, setData] = useState(mockData)
+	const [selectedOrder,setSelectedOrder] = useState<any>(null)
 	
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setLoading(true)
@@ -172,10 +175,40 @@ export default function OrderHistory() {
 					dataIndex: 'time',
 					key: 'time',
 					render: (time: number) => <>{moment(time).format('LLL')}</>,
-				},
+				},{
+				title:'Actions',
+					key:'action',
+					render:(value, record, index) => {
+					return <div>
+						<Tooltip title={<Typography.Text>View detail</Typography.Text>}><Button onClick={() => setSelectedOrder(record)} icon={<FontAwesomeIcon icon={faEye}/>}/></Tooltip>
+					</div>
+					}
+				}
 			]}
 			loading={loading}
 			dataSource={data}
 		/>
+		
+		<Modal open={!!selectedOrder} title={"Order detail"} onCancel={() => setSelectedOrder(null)}>
+			<Table
+			dataSource={selectedOrder?.order_items || [{image:"printer_16-01-2024-11",size:"xxl",quantity:23}]}
+			columns={[
+				{
+					title:"Name",
+					dataIndex:"image",
+					key:"image"
+				},{
+					title:"Size",
+					dataIndex:"size",
+					key:"size"
+				},{
+					title:"Quantity",
+					dataIndex:"quantity",
+					key:"quantity"
+				},]}
+			pagination={false}
+			/>
+		</Modal>
+		
 	</div>
 }
