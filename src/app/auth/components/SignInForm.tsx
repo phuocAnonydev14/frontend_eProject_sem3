@@ -5,15 +5,21 @@ import Link from "next/link";
 import AuthFormHeader from "@/app/auth/components/AuthFormHeader";
 import {useAppContext} from "@/app/providers/AppProvider";
 import {useRouter} from "next/navigation";
+import axios from "axios";
 
 export const SignInForm = () => {
 	const {setAccount} = useAppContext()
 	const router = useRouter()
 	
-	const submitBasicAuth = (vals: any) => {
-		console.log(vals)
-		setAccount(true)
-		router.push("/")
+	const submitBasicAuth = async (vals: any) => {
+		try{
+			console.log(vals)
+			const res = await axios.post("")
+			setAccount(true)			
+			router.push("/")
+		}catch(e){
+			
+		}
 	}
 	
 	return <div style={{flex: 1, minWidth: "50%"}}>
