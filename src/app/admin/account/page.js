@@ -1,5 +1,5 @@
 'use client';
-import { Table, TableColumnType, Tag, Typography } from 'antd';
+import { Table, Tag, Typography } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';

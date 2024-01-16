@@ -10,6 +10,7 @@ import AppProvider from "@/app/providers/AppProvider";
 import {PropsWithChildren} from "react";
 import {AppLayout} from "@/app/layouts/AppLayout";
 import {theme} from "antd";
+import NextTopLoader from "nextjs-toploader";
 
 // !STARTERCONF Change these default meta
 // !STARTERCONF Look at @/constant/config to change theme
@@ -19,8 +20,9 @@ export default function RootLayout({children}: PropsWithChildren) {
 	const {token} = theme.useToken()
 	
 	return (
-		<html suppressHydrationWarning={true}>
+		<html>
 		<body>
+		<NextTopLoader/>
 		<AppProvider>
 			<AppLayout>
 				{children}

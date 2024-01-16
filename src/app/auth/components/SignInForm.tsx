@@ -6,19 +6,20 @@ import AuthFormHeader from "@/app/auth/components/AuthFormHeader";
 import {useAppContext} from "@/app/providers/AppProvider";
 import {useRouter} from "next/navigation";
 import axios from "axios";
+import {API_URL} from "@/constant/env";
 
 export const SignInForm = () => {
 	const {setAccount} = useAppContext()
 	const router = useRouter()
-	
 	const submitBasicAuth = async (vals: any) => {
 		try{
-			console.log(vals)
-			const res = await axios.post("")
-			setAccount(true)			
+			const res = await axios.post(`${API_URL}/User/Login`,vals)
+			const accountRes = await axios.get(`${API_URL}/User/${res.data.userId}`)
+			setAccount(accountRes.data)
+			localStorage.setItem("accessToken",JSON.stringify(accountRes.data))
 			router.push("/")
 		}catch(e){
-			
+			console.log(e)
 		}
 	}
 	

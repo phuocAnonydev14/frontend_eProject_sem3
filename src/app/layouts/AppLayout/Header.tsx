@@ -8,13 +8,20 @@ import Image from "next/image";
 import {useAppContext} from "@/app/providers/AppProvider";
 import styles from "./styles.module.scss"
 import {EditOutlined, LogoutOutlined, ProfileOutlined} from "@ant-design/icons";
+import {useEffect} from "react";
 
 export const Header = () => {
 	
 	const router = useRouter()
 	const {setIsDarkTheme} = useAppContext()
 	const {token} = theme.useToken()
-	const {account} = useAppContext()
+	const {account, setAccount} = useAppContext()
+	
+	useEffect(() => {
+		const account = JSON.parse(localStorage.getItem("accessToken"))
+		setAccount(account)
+	}, []);
+	
 	
 	return <div className={`h-12 w-full flex justify-between items-center p-6 ${styles.wrapper}`}
 							style={{background: token.colorBgBase}}
@@ -34,19 +41,20 @@ export const Header = () => {
 						items: [{label: "Profile", key: "profile", icon: <ProfileOutlined/>}, {
 							label: "Manage",
 							key: "admin/account",
-							icon:<EditOutlined />
+							icon: <EditOutlined/>
 						},
 							{
 								label: "Logout",
 								key: "auth/sign-in",
-								danger:true,
-								icon:<LogoutOutlined />
-							}], 	onClick: ({key}) => {
+								danger: true,
+								icon: <LogoutOutlined/>
+							}], onClick: ({key}) => {
+							localStorage.removeItem("accessToken")
 							router.push(`/${key}`)
+							
 						}
 					}}>
-						<Button icon={<FontAwesomeIcon icon={faUser}/>} type={"text"} >Ho Huu
-							Phuoc</Button>
+						<Button icon={<FontAwesomeIcon icon={faUser}/>} type={"text"}>{account.username}</Button>
 					</Dropdown>
 					<Button type={"text"} icon={<FontAwesomeIcon icon={faPhotoFilm}/>}
 									onClick={() => router.push('/order')}>Order</Button>

@@ -43,6 +43,8 @@ import {convertBlobToFile, handleCreateFolder, stringToHash} from "@/lib/utils";
 import axios from "axios";
 import {awaitExpression} from "@babel/types";
 import {IOrder, useOrderContext} from "@/app/order/components/OrderProvider";
+import {useAppContext} from "@/app/providers/AppProvider";
+import {API_URL} from "@/constant/env";
 // import bcrypt from "bcrypt"
 const mockEnhancer = getMockSenderEnhancer({delay: 2000});
 const enhancer = composeEnhancers(retryEnhancer, mockEnhancer);
@@ -62,13 +64,15 @@ export default function Order() {
 	const {setOrder, order} = useOrderContext()
 	const [orderItems, setOrderItems] = useState<any>([])
 	const [loading, setLoading] = useState(false)
+	const {account} = useAppContext()
+	
 	
 	const handleFinish = async (values: any) => {
 		// setLoading(true)
 		let orderPayload: IOrder = {...order} as IOrder
-		// if (!orderPayload.credit_cvv || !orderPayload.credit_number || orderPayload.order_items.length === 0) {
-		// 	return message.error("Please fill in all requirement")
-		// }
+		if (!orderPayload.credit_cvv || !orderPayload.credit_number || orderPayload.order_items.length === 0 || !values.fullName) {
+			return message.error("Please fill in all requirement")
+		}
 		
 		let orderItemConverted = []
 		await Promise.all(
@@ -78,7 +82,7 @@ export default function Order() {
 			})
 		)
 		
-		const hashedCreditNumber = stringToHash(orderPayload.credit_number)
+		const hashedCreditNumber = stringToHash(orderPayload.credit_number).toString()
 		let total = 0
 		orderPayload.order_items.forEach(item => {
 			total += item.quantity
@@ -105,6 +109,35 @@ export default function Order() {
 					size: item.size
 				}))
 			}
+			
+			const newOrderRes = await axios.post(`${API_URL}/Order`, {
+				userId: account.id,
+				phone_number: values.phoneNumber,
+				address: values.address,
+				full_name: values.fullName,
+				folder_name: res.folder,
+				total: total,
+				status: 0,
+				payment_type: "banking",
+				payment_status: "success",
+				credit_number: hashedCreditNumber,
+				credit_cvv: orderPayload.credit_cvv,
+			})
+			
+			const orderList = await axios.get(`${API_URL}/Order`)
+			const currentOrder = orderList.data.find(item => item.credit_number === hashedCreditNumber)
+			
+			await Promise.all(
+				orderPayload.order_items.map(async (item, index) => {
+					const newOrderItemRes = await axios.post(`${API_URL}/Order_Item`, {
+						image: res.files[index],
+						quantity: item.quantity,
+						sizeId: item.size,
+						orderId: currentOrder.id
+					})
+					console.log({newOrderItemRes})
+				})
+			)
 			console.log({res})
 			message.success("Order successfully")
 		} catch (e) {
@@ -173,7 +206,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 	const {id, url, name, setPreviews, handleRemoveImage} = props
 	const [quantities, setQuantities] = useState(1)
 	const [selectedSize, setSelectedSize] = useState("xl")
-	const {setOrder, order} = useOrderContext()
+	const {setOrder, order, sizes} = useOrderContext()
 	
 	const abortItem = useAbortItem();
 	// const retry = useRetry();
@@ -210,7 +243,8 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 			if (order.url === url) {
 				return {
 					url, size: selectedSize,
-					quantity: quantities
+					quantity: quantities,
+					price: sizes.find(item =>  +selectedSize === item.id).price
 				}
 			} else {
 				return order
@@ -218,7 +252,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 		})
 		
 		
-		setOrder(state => ({...state, order_items: updatedOrderItem}))
+		setOrder(state => ({...state, order_items: updatedOrderItem,}))
 	}, [quantities, selectedSize]);
 	
 	return (
@@ -288,10 +322,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 								<Typography.Title level={5}>Size:</Typography.Title>
 								<Select
 									defaultValue={"lg"} style={{minWidth: "100px"}}
-									options={[{value: "xl", label: "3x4"}, {value: "md", label: "3x4"}, {
-										value: "lg",
-										label: "3x4"
-									}, {value: "xs", label: "3x4"},]}
+									options={sizes.map(size => ({value: size.id, label: size.name}))}
 									value={selectedSize}
 									onChange={(size) => setSelectedSize(size)}
 								/>
@@ -338,12 +369,11 @@ const UploadUi = ({setOrderItems}: any) => {
 	const {setOrder, order} = useOrderContext()
 	
 	useEffect(() => {
-		console.log(previews)
 		if (previews.length > 0) {
 			setOrder(state => ({
 				...state,
 				order_items: [...state.order_items, {url: previews[previews.length - 1].url, size: '1', quantity: 1}],
-				total:previews.length
+				total: previews.length
 			}))
 		}
 	}, [previews]);

@@ -7,12 +7,18 @@ import {StyleProvider} from '@ant-design/cssinjs';
 
 const AppContext = createContext<any>(null)
 
+type User = {
+	username: string,
+	id: number,
+	avatar: string
+}
+
 export default function AppProvider({children}: PropsWithChildren) {
 	
 	const router = useRouter()
 	const [isDarkTheme, setIsDarkTheme] = useState(false);
 	const {defaultAlgorithm, darkAlgorithm} = theme;
-	const [account,setAccount] = useState<any>(null)
+	const [account,setAccount] = useState<User | null>(null)
 	
 	return (
 		<AppContext.Provider value={{setIsDarkTheme: (check: boolean) => setIsDarkTheme(check),account,setAccount}}>

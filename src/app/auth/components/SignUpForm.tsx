@@ -15,12 +15,13 @@ import {
 import Link from 'next/link';
 import AuthFormHeader from '@/app/auth/components/AuthFormHeader';
 import axios from 'axios';
+import {API_URL} from "@/constant/env";
 
 export const SignUpForm = () => {
   const submitBasicAuth = async (vals: any) => {
     console.log(vals);
     try {
-      const res = await axios.post('http://localhost:65479/api/User/Register', {
+      const res = await axios.post(`${API_URL}/User/Register`, {
         ...vals,
         rePassword: vals.password,
         avatar: 'a',

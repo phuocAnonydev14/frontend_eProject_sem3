@@ -48,6 +48,7 @@ const PaymentForm = () => {
 				<Col xs={24} md={24} lg={12} xl={12}>
 					<div className={'flex flex-col gap-4'}>
 						<Input
+							type={"number"}
 							name="number"
 							placeholder="Card Number"
 							value={state.number}
