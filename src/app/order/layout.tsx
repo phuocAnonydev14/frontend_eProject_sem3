@@ -6,8 +6,9 @@ import {OrderProvider} from "@/app/order/components/OrderProvider";
 
 export interface OrderItem {
 	url: string | File,
-	size: string,
+	size: number,
 	quantity: number,
+	price: number
 }
 
 

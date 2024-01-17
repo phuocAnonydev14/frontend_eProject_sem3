@@ -149,6 +149,8 @@ export default function Order() {
 		return
 	}
 	
+	console.log({order})
+	
 	return <div className={"px-5"} suppressHydrationWarning>
 		<Card>
 			<Typography.Title>Orders</Typography.Title>
@@ -180,14 +182,26 @@ export default function Order() {
 							<Divider/>
 							<div className={'flex justify-between items-center'}>
 								<Typography.Title level={5}>Total:</Typography.Title>
-								<Typography.Title level={5}>{order.total}</Typography.Title>
+								<Typography.Title level={5}>{(() => {
+									let total = 0
+									order.order_items.map(item => {
+										total += item.quantity
+									})
+									return total
+								})()}</Typography.Title>
 							</div>
 							<div className={'flex justify-between items-center'}>
 								<Typography.Title level={5}>Price:</Typography.Title>
 								<Typography.Title level={5}>{new Intl.NumberFormat('vi-VN', {
 									style: 'currency',
 									currency: 'VND'
-								}).format(20000 * order.total)}</Typography.Title>
+								}).format((() => {
+									let total = 0
+									order.order_items.map(item => {
+										total += (+item.price * +item.quantity)
+									})
+									return total
+								})())}</Typography.Title>
 							</div>
 							<Button loading={loading} htmlType={"submit"} onClick={handleFinish} className={"my-4"} type={"primary"}
 											block>Checkout</Button>
@@ -205,7 +219,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 	const [itemState, setItemState] = useState(STATES.PROGRESS);
 	const {id, url, name, setPreviews, handleRemoveImage} = props
 	const [quantities, setQuantities] = useState(1)
-	const [selectedSize, setSelectedSize] = useState("xl")
+	const [selectedSize, setSelectedSize] = useState(1)
 	const {setOrder, order, sizes} = useOrderContext()
 	
 	const abortItem = useAbortItem();
@@ -240,11 +254,14 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 	
 	useEffect(() => {
 		const updatedOrderItem = order.order_items.map(order => {
+			console.log(selectedSize, sizes)
+			console.log(sizes.find(item => +selectedSize === item.id))
+			
 			if (order.url === url) {
 				return {
-					url, size: selectedSize,
+					url, size: +selectedSize,
 					quantity: quantities,
-					price: sizes.find(item =>  +selectedSize === item.id).price
+					price: +sizes.find(item => +selectedSize === item.id)?.price
 				}
 			} else {
 				return order
@@ -252,7 +269,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 		})
 		
 		
-		setOrder(state => ({...state, order_items: updatedOrderItem,}))
+		setOrder(state => ({...state, order_items: updatedOrderItem}))
 	}, [quantities, selectedSize]);
 	
 	return (
@@ -291,6 +308,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 						key="retry"
 						icon={<CloseOutlined/>}
 						onClick={async () => {
+							setOrder(state => ({...state, order_items: order.order_items.filter(item => item.url !== url)}))
 							handleRemoveImage(id)
 							// await handleCreateFolder('test')
 							// await handleUploadFile()
@@ -321,7 +339,7 @@ const PreviewCard = memo((props: { id: any, url: any, name: any, setPreviews: an
 							<div>
 								<Typography.Title level={5}>Size:</Typography.Title>
 								<Select
-									defaultValue={"lg"} style={{minWidth: "100px"}}
+									style={{minWidth: "100px"}}
 									options={sizes.map(size => ({value: size.id, label: size.name}))}
 									value={selectedSize}
 									onChange={(size) => setSelectedSize(size)}
@@ -366,14 +384,21 @@ const UploadButton = asUploadButton(Button);
 const UploadUi = ({setOrderItems}: any) => {
 	const previewMethodsRef = useRef<any>();
 	const [previews, setPreviews] = useState([]);
-	const {setOrder, order} = useOrderContext()
+	const {setOrder, order, sizes} = useOrderContext()
+	
 	
 	useEffect(() => {
 		if (previews.length > 0) {
 			setOrder(state => ({
 				...state,
-				order_items: [...state.order_items, {url: previews[previews.length - 1].url, size: '1', quantity: 1}],
-				total: previews.length
+				order_items: [...state.order_items, {
+					url: previews[previews.length - 1].url,
+					size: 1,
+					quantity: 1,
+					price: +sizes[0].price
+				}],
+				total: previews.length,
+				
 			}))
 		}
 	}, [previews]);
