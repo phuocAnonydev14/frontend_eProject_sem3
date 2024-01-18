@@ -16,7 +16,7 @@ export const SignInForm = () => {
 			const res = await axios.post(`${API_URL}/User/Login`,vals)
 			const accountRes = await axios.get(`${API_URL}/User/${res.data.userId}`)
 			setAccount(accountRes.data)
-			localStorage.setItem("accessToken",JSON.stringify(accountRes.data))
+			localStorage.setItem("accessToken",JSON.stringify({...accountRes.data,token:res.data.token}))
 			router.push("/")
 		}catch(e){
 			console.log(e)

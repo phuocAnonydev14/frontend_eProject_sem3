@@ -140,6 +140,8 @@ export default function Order() {
 			)
 			console.log({res})
 			message.success("Order successfully")
+			form.resetFields()
+			
 		} catch (e) {
 			console.log(e)
 		} finally {
@@ -149,7 +151,6 @@ export default function Order() {
 		return
 	}
 	
-	console.log({order})
 	
 	return <div className={"px-5"} suppressHydrationWarning>
 		<Card>

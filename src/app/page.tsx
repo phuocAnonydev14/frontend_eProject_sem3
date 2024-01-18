@@ -4,8 +4,12 @@ import Head from 'next/head';
 import * as React from 'react';
 import { Button, Col, Flex, Row, Typography } from 'antd';
 import { LikeOutlined, SmileOutlined, StarOutlined } from '@ant-design/icons';
+import {useRouter} from "next/navigation";
 
 export default function HomePage() {
+  
+  const router = useRouter()
+  
   return (
     <main>
       <div
@@ -15,7 +19,7 @@ export default function HomePage() {
         <div className='mx-4'>
           <p className='text-center text-5xl'>Pictures, As You Like Them</p>
           <p className='my-1 text-2xl'>Get Yours Today</p>
-          <Button size='large' type='primary'>
+          <Button onClick={() => router.push("/order")}  size='large' type='primary'>
             Print Now
           </Button>
         </div>
@@ -55,7 +59,7 @@ export default function HomePage() {
               Our prints offer the highest quality to ensure your satisfaction
             </p>
             <Flex justify='center' className='my-2'>
-              <Button size='large' type='default'>
+              <Button onClick={() => router.push("/order")} size='large' type='default'>
                 Print With Quality
               </Button>
             </Flex>

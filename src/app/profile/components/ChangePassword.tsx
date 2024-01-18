@@ -1,4 +1,4 @@
-import {Button, Card, Col, Form, Input, Row, Typography} from "antd";
+import {Button, Card, Col, Form, Input, message, Row, Typography} from "antd";
 import {useForm} from "antd/es/form/Form";
 import {useWatch} from "rc-field-form/lib";
 import {useMemo} from "react";
@@ -52,8 +52,12 @@ export const ChangePassword = () => {
 		})
 	}, [trackedNewPassword])
 	
+	const onFinish = async () => {
+		return message.success("Change password successfully")
+	}
+	
 	return <Card>
-		<Form layout={'vertical'} form={form}>
+		<Form layout={'vertical'} form={form} onFinish={onFinish}>
 			<Row gutter={[80, 16]}>
 				<Col xs={24} md={{order: 2, span: 10}} className={'d-flex align-center'}>
 					<Row gutter={16}>
@@ -132,7 +136,7 @@ export const ChangePassword = () => {
 						<Input.Password placeholder={'Confirm password...'}/>
 					</Form.Item>
 					
-					<Button block type={'primary'} htmlType={'submit'} >
+					<Button block type={'primary'} htmlType={'submit'}>
 						Change password
 					</Button>
 				</Col>

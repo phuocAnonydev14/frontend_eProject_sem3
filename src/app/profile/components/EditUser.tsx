@@ -3,24 +3,44 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBookSkull, faPenToSquare} from "@fortawesome/free-solid-svg-icons";
 import styles from "./styles.module.scss"
 import {ProfileAvatar} from "@/app/profile/components/ProfileAvatar";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useForm} from "antd/es/form/Form";
+import {useAppContext} from "@/app/providers/AppProvider";
+import axios from "axios";
+import {API_URL} from "@/constant/env";
+
 export const EditUser = () => {
 	
-	const [loading,setLoading] = useState(false)
+	const [loading, setLoading] = useState(false)
+	const [form] = useForm()
+	const {account} = useAppContext()
 	
-	const onFinish = async () => {
-		setLoading(true)
-		setTimeout(() => {
+	useEffect(() => {
+		console.log(account)
+		account && form.setFieldsValue(account)
+	}, [account]);
+	
+	const onFinish = async (values: any) => {
+		try {
+			setLoading(true)
+			await axios.put(`${API_URL}/User/${account.id}`, {...values, id: account.id}, {
+				headers: {
+					Authorization: `Bearer ${account.token}`
+				}
+			})
 			message.success("Update profile successfully")
+		} catch (e) {
+			message.error("Update profile failed")
+		} finally {
 			setLoading(false)
-		},2000)
+		}
 	}
 	
 	return <Spin spinning={false}>
 		<Card>
 			<Form
 				onFinish={onFinish}
-				// form={form}
+				form={form}
 				labelCol={{flex: '128px'}}
 				labelAlign="left"
 				labelWrap
@@ -47,7 +67,7 @@ export const EditUser = () => {
 				<Row gutter={16}>
 					<Col xs={24} lg={8}>
 						{/*<AccountProfileAvatar/>*/}
-						<ProfileAvatar />
+						<ProfileAvatar/>
 					</Col>
 					<Col xs={24} lg={16} className={`${styles.info}`}>
 						<Row gutter={12}>
@@ -56,25 +76,39 @@ export const EditUser = () => {
 									name="email"
 									label="Email"
 								>
-									<Typography>anonymousbigtits@gmail.com</Typography>
+									<Input bordered={false} placeholder="Enter  email..."/>
+								</Form.Item>
+							</Col>
+							<Col xs={24} md={12}>
+								<Form.Item
+									name="username"
+									label="Username"
+								>
+									<Input bordered={false} placeholder="Enter  username..."/>
 								</Form.Item>
 							</Col>
 							<Col xs={24} md={12}>
 								<Form.Item
 									name="phone"
 									label="Phone"
-									rules={[{
-										pattern: /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/g,
-										message: "Invalid phone number"
-									}]}>
+									>
 									<Input bordered={false} placeholder="Enter phone number..."/>
 								</Form.Item>
-							</Col>
-							<Col xs={24} md={12}>
-								<Form.Item name="dob" label="Birthday">
-									<DatePicker bordered={false} placeholder="Select date of birth"/>
-								</Form.Item>
-							</Col>
+							</Col><Col xs={24} md={12}>
+							<Form.Item
+								name="first_name"
+								label="First name"
+							>
+								<Input bordered={false} placeholder="Enter first name..."/>
+							</Form.Item>
+						</Col><Col xs={24} md={12}>
+							<Form.Item
+								name="last_name"
+								label="Last name"
+							>
+								<Input bordered={false} placeholder="Enter last name..."/>
+							</Form.Item>
+						</Col>
 							<Col xs={24} md={12}>
 								<Form.Item name="gender" label={"Gender"}>
 									<Select bordered={false} placeholder="Enter gender">
@@ -84,14 +118,9 @@ export const EditUser = () => {
 									</Select>
 								</Form.Item>
 							</Col>
-							<Col xs={24}>
+							<Col xs={24} md={12}>
 								<Form.Item name="address" label="Address">
 									<Input bordered={false} placeholder="Enter address..."/>
-								</Form.Item>
-							</Col>
-							<Col xs={24}>
-								<Form.Item name="permanentAddress" label="Place of permanent">
-									<Input bordered={false} placeholder={'Enter place of permanent'}/>
 								</Form.Item>
 							</Col>
 						</Row>

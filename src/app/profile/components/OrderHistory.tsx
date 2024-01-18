@@ -1,11 +1,14 @@
 'use client'
 
-import {Button, Input, Modal, Table, Tooltip, Typography} from "antd";
+import {Button, Input, Modal, Table, Tag, Tooltip, Typography} from "antd";
 import moment from "moment";
 import {ChangeEvent, useEffect, useState} from "react";
 import {useDebounce} from "@/lib/hooks/useDebounce";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons";
+import {useAppContext} from "@/app/providers/AppProvider";
+import axios from "axios";
+import {API_URL} from "@/constant/env";
 
 
 const mockData = [
@@ -126,7 +129,14 @@ export default function OrderHistory() {
 	const debouncedValue = useDebounce<string>(value, 500)
 	const [loading, setLoading] = useState(false)
 	const [data, setData] = useState(mockData)
-	const [selectedOrder,setSelectedOrder] = useState<any>(null)
+	const [selectedOrder, setSelectedOrder] = useState<any>(null)
+	const {account} = useAppContext()
+	useEffect(() => {
+		;(async () => {
+			const res = await axios.get(`${API_URL}/Order`)
+			setData(res.data)
+		})()
+	}, []);
 	
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setLoading(true)
@@ -144,14 +154,15 @@ export default function OrderHistory() {
 	return <div>
 		
 		<Input.Search type="text" loading={loading} value={value} onChange={handleChange} width={200}
-									enterKeyHint={"search"} style={{width: "300px", marginBottom: "10px"}} placeholder={"Search by name"}/>
+									enterKeyHint={"search"} style={{width: "300px", marginBottom: "10px"}}
+									placeholder={"Search by name"}/>
 		
 		<Table
 			bordered={true}
 			columns={[
 				{
 					title: 'Name',
-					dataIndex: 'name',
+					dataIndex: 'full_name',
 					key: 'entranceId',
 				},
 				{
@@ -165,23 +176,26 @@ export default function OrderHistory() {
 					key: 'type',
 					
 				}, {
-					title: 'Price',
-					dataIndex: 'price',
+					title: 'Status',
+					dataIndex: 'status',
 					key: 'type',
+					render: (value) => {
+						return <div>{!value ? <Tag>Done</Tag> : <Tag>Shipping</Tag>}</div>
+					}
 					
 				},
 				{
-					title: 'Created Time',
-					dataIndex: 'time',
+					title: 'Phone',
+					dataIndex: 'phone_number',
 					key: 'time',
-					render: (time: number) => <>{moment(time).format('LLL')}</>,
-				},{
-				title:'Actions',
-					key:'action',
-					render:(value, record, index) => {
-					return <div>
-						<Tooltip title={<Typography.Text>View detail</Typography.Text>}><Button onClick={() => setSelectedOrder(record)} icon={<FontAwesomeIcon icon={faEye}/>}/></Tooltip>
-					</div>
+				}, {
+					title: 'Actions',
+					key: 'action',
+					render: (value, record, index) => {
+						return <div>
+							<Tooltip title={<Typography.Text>View detail</Typography.Text>}><Button
+								onClick={() => setSelectedOrder(record)} icon={<FontAwesomeIcon icon={faEye}/>}/></Tooltip>
+						</div>
 					}
 				}
 			]}
@@ -191,24 +205,24 @@ export default function OrderHistory() {
 		
 		<Modal open={!!selectedOrder} title={"Order detail"} onCancel={() => setSelectedOrder(null)}>
 			<Table
-			dataSource={selectedOrder?.order_items || [{image:"printer_16-01-2024-11",size:"xxl",quantity:23}]}
-			columns={[
-				{
-					title:"Name",
-					dataIndex:"image",
-					key:"image"
-				},{
-					title:"Size",
-					dataIndex:"size",
-					key:"size"
-				},{
-					title:"Quantity",
-					dataIndex:"quantity",
-					key:"quantity"
-				},]}
-			pagination={false}
+				dataSource={selectedOrder?.order_items || [{image: "printer_16-01-2024-11", size: "xxl", quantity: 23}]}
+				columns={[
+					{
+						title: "Name",
+						dataIndex: "image",
+						key: "image"
+					}, {
+						title: "Size",
+						dataIndex: "size",
+						key: "size"
+					}, {
+						title: "Quantity",
+						dataIndex: "quantity",
+						key: "quantity"
+					},]}
+				pagination={false}
 			/>
 		</Modal>
-		
+	
 	</div>
 }

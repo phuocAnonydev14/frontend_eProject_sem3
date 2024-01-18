@@ -49,7 +49,7 @@ export const Header = () => {
 								danger: true,
 								icon: <LogoutOutlined/>
 							}], onClick: ({key}) => {
-							localStorage.removeItem("accessToken")
+							key === "auth/sign-in" && localStorage.removeItem("accessToken")
 							router.push(`/${key}`)
 							
 						}
