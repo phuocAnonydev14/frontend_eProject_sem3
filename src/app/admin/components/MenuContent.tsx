@@ -5,7 +5,7 @@ import {Menu} from 'antd';
 import SubMenu from "antd/es/menu/SubMenu";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {usePathname, useRouter} from "next/navigation";
-import {faEnvelope, faHouse} from "@fortawesome/free-solid-svg-icons";
+import {faArrowsAlt, faEnvelope, faHouse} from "@fortawesome/free-solid-svg-icons";
 
 
 export enum RoleEnum {
@@ -29,6 +29,14 @@ const dashBoardNavTree = [
 		path: `/admin/order`,
 		title: 'Order',
 		icon: faEnvelope,
+		breadcrumb: false,
+		children: []
+	},
+	{
+		key: 'admin/size',
+		path: `/admin/size`,
+		title: 'Sizes',
+		icon: faArrowsAlt,
 		breadcrumb: false,
 		children: []
 	}

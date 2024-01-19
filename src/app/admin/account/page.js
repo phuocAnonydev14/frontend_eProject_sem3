@@ -1,12 +1,14 @@
 'use client';
 import { Table, Tag, Typography } from 'antd';
 import moment from 'moment';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space } from 'antd';
+import { NextPageContext } from 'next';
+import { API_URL } from '@/constant/env';
 
 export default function AccountPage() {
-  console.log("come")
+  console.log('come');
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -231,10 +233,26 @@ export default function AccountPage() {
     },
   ];
 
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`${API_URL}/User/`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      setData(result);
+    };
+
+    fetchData().catch((e) => {
+      // handle the error as needed
+      console.error('An error occurred while fetching the data: ', e);
+    });
+  }, []);
+
   const columns = (
     <div className='container  ml-10'>
       <Typography.Title level={3}>Accounts management</Typography.Title>
-
       <Table
         bordered={true}
         columns={[
@@ -242,7 +260,7 @@ export default function AccountPage() {
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
-            ...getColumnSearchProps('username'),
+            ...getColumnSearchProps('id'),
           },
           {
             title: 'Username',
@@ -254,17 +272,17 @@ export default function AccountPage() {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
-						...getColumnSearchProps('email'),
+            ...getColumnSearchProps('email'),
           },
           {
             title: 'First Name',
-            dataIndex: 'firstname',
-            key: 'firstname',
+            dataIndex: 'first_name',
+            key: 'first_name',
           },
           {
             title: 'Last Name',
-            dataIndex: 'lastname',
-            key: 'lastname',
+            dataIndex: 'last_name',
+            key: 'last_name',
           },
           {
             title: 'Date of Birth',
@@ -275,9 +293,6 @@ export default function AccountPage() {
             title: 'Gender',
             dataIndex: 'gender',
             key: 'gender',
-            render: (type) => (
-              <>{type === 1 ? <span>Male</span> : <span>Female</span>}</>
-            ),
             filters: [
               {
                 text: 'Male',
@@ -288,7 +303,7 @@ export default function AccountPage() {
                 value: 2,
               },
             ],
-						filterMultiple: false,
+            filterMultiple: false,
           },
           {
             title: 'Phone',
@@ -304,19 +319,10 @@ export default function AccountPage() {
             title: 'Role',
             dataIndex: 'role',
             key: 'role',
-            render: (type) => (
-              <>
-                {type === 1 ? (
-                  <Tag color={'red'}>Admin</Tag>
-                ) : (
-                  <Tag color={'green'}>Customer</Tag>
-                )}
-              </>
-            ),
           },
         ]}
-        pagination={{size:"default"}}
-        dataSource={dataSource}
+        pagination={{ size: 'default' }}
+        dataSource={data}
       />{' '}
     </div>
   );
