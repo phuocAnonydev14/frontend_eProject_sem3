@@ -2,10 +2,12 @@
 
 import {ChangeEvent, useEffect, useState} from "react";
 import {useDebounce} from "@/lib/hooks/useDebounce";
-import {Button, Input, Modal, Select, Table, Tag, Tooltip, Typography} from "antd";
+import {Button, Input, message, Modal, Select, Table, Tag, Tooltip, Typography} from "antd";
 import moment from "moment/moment";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import {API_URL} from "@/constant/env";
 
 const mockData = [
 	{
@@ -17,8 +19,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -28,8 +30,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -39,8 +41,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -50,8 +52,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -61,8 +63,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -72,8 +74,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -83,8 +85,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -94,8 +96,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -105,8 +107,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -116,8 +118,8 @@ const mockData = [
 			currency: 'VND'
 		}).format(Math.round(200000)),
 		time: moment(),
-		status:"pending",
-		payment_status:"success"
+		status: "pending",
+		payment_status: "success"
 	}, {
 		name: "phuoc",
 		address: "150 Hoang Quoc Viet",
@@ -139,25 +141,59 @@ const mockData = [
 	},
 ]
 
+type Order = {
+	id: string,
+	userId: number,
+	phone_number: string,
+	address: string,
+	full_name: string,
+	folder_name: string,
+	total: number,
+	status: string,
+	payment_type: string,
+	credit_cvv: string,
+	payment_status: string,
+}
+
 
 export default function OrderPage() {
 	const [value, setValue] = useState<string>('')
 	const debouncedValue = useDebounce<string>(value, 500)
 	const [loading, setLoading] = useState(false)
-	const [data, setData] = useState(mockData)
-	const [selectedOrder,setSelectedOrder] = useState<any>(null)
+	const [data, setData] = useState<Order[]>([])
+	const [selectedOrder, setSelectedOrder] = useState<any>(null)
+	
 	
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setLoading(true)
 		setValue(event.target.value)
 	}
 	
+	const handleFetchOrder = async () => {
+		const order = await axios.get(`${API_URL}/Order`)
+		console.log(order.data)
+		setData(order.data)
+	}
+	
+	const handleUpdateOrder = async (order: any) => {
+		try {
+			delete order.userResponseDTO
+			const res = await axios.put(`${API_URL}/Order/${order.id}`, {...order})
+			console.log(res)
+		} catch (e) {
+			console.log(e)
+		} finally {
+			message.success("Update successfully")
+			
+		}
+	}
+	
 	// Fetch API (optional)
 	useEffect(() => {
 		// Do fetch here...
 		setLoading(false)
-		setData(mockData.filter(data => data.name.includes(debouncedValue)))
 		// Triggers when "debouncedValue" changes
+		handleFetchOrder()
 	}, [debouncedValue])
 	
 	return <div>
@@ -171,7 +207,7 @@ export default function OrderPage() {
 			columns={[
 				{
 					title: 'Name',
-					dataIndex: 'name',
+					dataIndex: 'full_name',
 					key: 'entranceId',
 				},
 				{
@@ -185,8 +221,8 @@ export default function OrderPage() {
 					key: 'type',
 					
 				}, {
-					title: 'Price',
-					dataIndex: 'price',
+					title: 'Phone number',
+					dataIndex: 'phone_number',
 					key: 'type',
 					
 				}, {
@@ -194,28 +230,29 @@ export default function OrderPage() {
 					dataIndex: 'status',
 					key: 'status',
 					render: (value, record, index) => {
-						return <Select options={[{value: "shipping", label: "Shipping"}, {value: "received", label: "Received"}]} defaultValue={value}/>
+						return <Select disabled={!!value}
+													 options={[{value: "shipping", label: "Shipping"}, {value: "received", label: "Received"}]}
+													 defaultValue={value === 0 ? "shipping" : "received"}
+													 onChange={() => handleUpdateOrder({...record, status: 1})}/>
 					}
 				}, {
 					title: 'Payment Status',
 					dataIndex: 'payment_status',
 					key: 'status',
 					render: (value, record, index) => {
-						return <Select options={[{value: "pending", label: "Pending"}, {value: "success", label: "Success"}]} defaultValue={value}/>
+						return <Select options={[{value: "pending", label: "Pending"}, {value: "success", label: "Success"}]}
+													 disabled={value === "success"}
+													 defaultValue={value}
+													 onChange={() => handleUpdateOrder({...record, payment_status: "success"})}/>
 					}
 				},
 				{
-					title: 'Created Time',
-					dataIndex: 'time',
-					key: 'time',
-					render: (time: number) => <>{moment(time).format('LLL')}</>,
-				},
-				{
-					title:'Actions',
-					key:'action',
-					render:(_, record, index) => {
+					title: 'Actions',
+					key: 'action',
+					render: (_, record, index) => {
 						return <div>
-							<Tooltip title={<Typography.Text>View detail</Typography.Text>}><Button onClick={() => setSelectedOrder(record)} icon={<FontAwesomeIcon icon={faEye}/>}/></Tooltip>
+							<Tooltip title={<Typography.Text>View detail</Typography.Text>}><Button
+								onClick={() => setSelectedOrder(record)} icon={<FontAwesomeIcon icon={faEye}/>}/></Tooltip>
 						</div>
 					}
 				}
@@ -226,20 +263,20 @@ export default function OrderPage() {
 		
 		<Modal open={!!selectedOrder} title={"Order detail"} onCancel={() => setSelectedOrder(null)}>
 			<Table
-				dataSource={selectedOrder?.order_items || [{image:"printer_16-01-2024-11",size:"xxl",quantity:23}]}
+				dataSource={selectedOrder?.order_items || [{image: "printer_16-01-2024-11", size: "xxl", quantity: 23}]}
 				columns={[
 					{
-						title:"Name",
-						dataIndex:"image",
-						key:"image"
-					},{
-						title:"Size",
-						dataIndex:"size",
-						key:"size"
-					},{
-						title:"Quantity",
-						dataIndex:"quantity",
-						key:"quantity"
+						title: "Name",
+						dataIndex: "image",
+						key: "image"
+					}, {
+						title: "Size",
+						dataIndex: "size",
+						key: "size"
+					}, {
+						title: "Quantity",
+						dataIndex: "quantity",
+						key: "quantity"
 					},]}
 				pagination={false}
 			/>
